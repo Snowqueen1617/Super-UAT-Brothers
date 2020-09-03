@@ -11,6 +11,7 @@ public class Player : MonoBehaviour
     public int maxJump = 1;
     public float height = 1.1f;
     public int currentJumps;
+    private Animator animator;
 
     // Start is called before the first frame update
     void Start()
@@ -18,6 +19,7 @@ public class Player : MonoBehaviour
         rigidBody = GetComponent<Rigidbody2D>();
         sprite = GetComponent<SpriteRenderer>();
         currentJumps = maxJump;
+        animator = GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -25,9 +27,21 @@ public class Player : MonoBehaviour
     {
         float xMovement = Input.GetAxis("Horizontal") * speed;
 
+        animator.SetFloat("xMove", Mathf.Abs(xMovement));
+
         //transform.position += transform.right * xMovement;
         rigidBody.velocity = new Vector2(xMovement, rigidBody.velocity.y);
 
+       /*Handling animation through code instead of the animation system
+        if(rigidBody.velocity.x != 0)
+        {
+            animator.Play("PlayerWalk");
+        }
+        else
+        {
+            animator.Play("PlayerIdle");
+        }
+       */
         //sprite.flipX = rigidBody.velocity.x < 0;
         if(rigidBody.velocity.x > 0)
         {
@@ -37,6 +51,8 @@ public class Player : MonoBehaviour
         {
             sprite.flipX = true;
         }
+       
+
 
         if(Input.GetButtonDown("Jump"))
         {
@@ -44,21 +60,32 @@ public class Player : MonoBehaviour
             {
                 currentJumps = maxJump;
             }
-
-            Jump();
+            if(currentJumps > 0)
+            {
+                Jump();
+            }
+            
         }
     }
 
     void Jump()
     {
-
-        rigidBody.AddForce(Vector2.up * jumpForce);
+        currentJumps--;
+        animator.SetTrigger("Jump");
+        //rigidBody.AddForce(Vector2.up * jumpForce);
+        rigidBody.velocity = new Vector2(rigidBody.velocity.x, jumpForce);
     }
 
     bool IsGrounded()
     {
         RaycastHit2D hitInfo = Physics2D.Raycast(transform.position, Vector2.down, (height / 2f) + 0.1f);
+        bool grounded = (hitInfo.collider != null);
+        animator.SetBool("IsGrounded", grounded);
+        return grounded;
+    }
 
-        return (hitInfo.collider != null);
+    private void OnCollisionEnter2D(Collision2D other)
+    {
+        IsGrounded();
     }
 }
