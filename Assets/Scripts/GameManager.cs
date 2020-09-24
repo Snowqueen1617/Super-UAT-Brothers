@@ -7,6 +7,10 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
     public int currentSceneIndex = 0;
+    public GameObject playerPrefab;
+    public GameObject player;
+
+    public int points = 0;
 
     void OnEnable()
     {
@@ -29,7 +33,7 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        
+
     }
 
     void Update()

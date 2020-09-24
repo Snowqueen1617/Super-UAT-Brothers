@@ -20,6 +20,12 @@ public class Player : MonoBehaviour
         sprite = GetComponent<SpriteRenderer>();
         currentJumps = maxJump;
         animator = GetComponent<Animator>();
+
+        //Player can add itself to the game manager...
+        //if(GameManager.instance != null)
+        //{
+        //    GameManager.instance.player = this.gameObject;
+        //}
     }
 
     // Update is called once per frame
