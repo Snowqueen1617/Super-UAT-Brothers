@@ -62,10 +62,7 @@ public class Player : MonoBehaviour
 
         if(Input.GetButtonDown("Jump"))
         {
-            if(IsGrounded())
-            {
-                currentJumps = maxJump;
-            }
+           
             if(currentJumps > 0)
             {
                 Jump();
@@ -87,11 +84,15 @@ public class Player : MonoBehaviour
         RaycastHit2D hitInfo = Physics2D.Raycast(transform.position, Vector2.down, (height / 2f) + 0.1f);
         bool grounded = (hitInfo.collider != null);
         animator.SetBool("IsGrounded", grounded);
+        UnityEngine.Debug.Log(grounded);
         return grounded;
     }
 
     private void OnCollisionEnter2D(Collision2D other)
     {
-        IsGrounded();
+        if (IsGrounded())
+        {
+            currentJumps = maxJump;
+        }
     }
 }
